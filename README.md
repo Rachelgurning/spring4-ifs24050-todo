@@ -9,8 +9,8 @@
 = Menambahkan pengujian untuk method `sayHello()`
 - Menambahkan method `sayhai()` pada HomeController
 = Menambahkan pengujian untuk method `sayhai()`
-
-
+- Menambahkan method `sayhai()` pada HomeController
+= Menambahkan pengujian untuk method `sayhai()`
 ## Syntax
 
 ### Melakukan Instal Ulang Kebutuhan Paket
