@@ -7,8 +7,8 @@
 - Melakukan inisialisasi proyek
 - Menambahkan method `sayHello()` pada HomeController
 = Menambahkan pengujian untuk method `sayHello()`
-- Menambahkan method `sayHoo()` pada HomeController
-= Menambahkan pengujian untuk method `sayHoo()`
+- Menambahkan method `sayHooo()` pada HomeController
+= Menambahkan pengujian untuk method `sayHooo()`
 
 ## Syntax
 
