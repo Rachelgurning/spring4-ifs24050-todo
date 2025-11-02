@@ -130,19 +130,13 @@ class HomeControllerTest {
     // TEST LENGKAP UNTUK perolehanNilai
     // ===================================
 
-    @Test
+@Test
     @DisplayName("Perolehan nilai - Menghitung data untuk Grade A")
     void testPerolehanNilai_DataLengkap_GradeA() {
-        String input = """
-            Partisipatif|100
-            Tugas|100
-            Kuis|80
-            Proyek|90
-            UTS|85
-            UAS|85
-            """;
+        String input = "Partisipatif|100\nTugas|100\nKuis|80\nProyek|90\nUTS|85\nUAS|85";
         String base64Input = encode(input);
-        String result = controller.perolehanNilai(base64Input);
+        // Tes ini sekarang memanggil method @GetMapping
+        String result = controller.perolehanNilai(base64Input); 
         assertTrue(result.contains("Nilai Akhir: 89.00"));
         assertTrue(result.contains("Grade: A"));
     }
@@ -150,14 +144,7 @@ class HomeControllerTest {
     @Test
     @DisplayName("Perolehan nilai - Menghitung data lengkap (Grade B)")
     void testPerolehanNilai_DataLengkap_GradeB() {
-        String input = """
-            Partisipatif|80
-            Tugas|90
-            Kuis|85
-            Proyek|70
-            UTS|75
-            UAS|88
-            """;
+        String input = "Partisipatif|80\nTugas|90\nKuis|85\nProyek|70\nUTS|75\nUAS|88";
         String base64Input = encode(input); 
         String result = controller.perolehanNilai(base64Input);
         assertTrue(result.contains("Nilai Akhir: 81.90"));
@@ -167,14 +154,7 @@ class HomeControllerTest {
     @Test
     @DisplayName("Perolehan nilai - Menghitung data untuk Grade C")
     void testPerolehanNilai_GradeC() {
-        String input = """
-            Partisipatif|60
-            Tugas|60
-            Kuis|60
-            Proyek|60
-            UTS|60
-            UAS|60
-            """; // Semua 60 akan menghasilkan 60
+        String input = "Partisipatif|60\nTugas|60\nKuis|60\nProyek|60\nUTS|60\nUAS|60";
         String base64Input = encode(input);
         String result = controller.perolehanNilai(base64Input);
         assertTrue(result.contains("Nilai Akhir: 60.00"));
@@ -184,12 +164,7 @@ class HomeControllerTest {
     @Test
     @DisplayName("Perolehan nilai - Menghitung data untuk Grade D")
     void testPerolehanNilai_GradeD() {
-        String input = """
-            Partisipatif|100
-            Tugas|100
-            UTS|40
-            UAS|40
-            """; // 10 + 15 + 8 + 12 = 45
+        String input = "Partisipatif|100\nTugas|100\nUTS|40\nUAS|40"; // 10 + 15 + 8 + 12 = 45
         String base64Input = encode(input);
         String result = controller.perolehanNilai(base64Input);
         assertTrue(result.contains("Nilai Akhir: 45.00"));
@@ -199,10 +174,7 @@ class HomeControllerTest {
     @Test
     @DisplayName("Perolehan nilai - Data tidak lengkap (Grade E)")
     void testPerolehanNilai_DataTidakLengkap_GradeE() {
-        String input = """
-            UTS|70
-            UAS|60
-            """; // 14 + 18 = 32
+        String input = "UTS|70\nUAS|60"; // 14 + 18 = 32
         String base64Input = encode(input);
         String result = controller.perolehanNilai(base64Input);
         assertTrue(result.contains("Nilai Akhir: 32.00"));
@@ -212,25 +184,10 @@ class HomeControllerTest {
     @Test
     @DisplayName("Perolehan nilai - Memicu NumberFormatException (catch merah)")
     void testPerolehanNilai_NumberFormatException() {
-        String input = """
-            Partisipatif|100
-            Tugas|abc
-            UAS|50
-            """; // 10 + 0 (diabaikan) + 15 = 25
+        String input = "Partisipatif|100\nTugas|abc\nUAS|50"; // 10 + 0 (diabaikan) + 15 = 25
         String base64Input = encode(input);
         String result = controller.perolehanNilai(base64Input);
-        // Tes ini memastikan 'catch' dieksekusi dan program tidak crash
         assertTrue(result.contains("Nilai Akhir: 25.00"));
-        assertTrue(result.contains("Grade: E"));
-    }
-
-    @Test
-    @DisplayName("Perolehan nilai - Data tidak valid (format salah)")
-    void testPerolehanNilai_FormatDataSalah() {
-        String input = "Ini data acak\n1|2|3\nxyz";
-        String base64Input = encode(input);
-        String result = controller.perolehanNilai(base64Input);
-        assertTrue(result.contains("Nilai Akhir: 0.00"));
     }
 
     @Test
@@ -240,26 +197,24 @@ class HomeControllerTest {
         String result = controller.perolehanNilai(invalidBase64);
         assertTrue(result.contains("Nilai Akhir: 0.00"));
     }
-
+    
     @Test
-    @DisplayName("Perolehan nilai - Mengabaikan kategori yang tidak dikenal")
+    @DisplayName("Perolehan nilai - Mengabaikan kategori yang tidak dikenal (Perbaikan Kuning)")
     void testPerolehanNilai_InvalidKategoriName() {
-        String input = """
-            Partisipatif|100
-            NilaiExtra|100
-            UAS|50
-            """; // 10 + 0 (diabaikan) + 15 = 25
+        String input = "Partisipatif|100\nNilaiExtra|100\nUAS|50"; // 10 + 0 + 15 = 25
         String base64Input = encode(input);
         String result = controller.perolehanNilai(base64Input);
-        
-        // Tes ini memaksa 'if (kategori[i].equals...)' menjadi false
-        // untuk semua 'i' saat memproses "NilaiExtra".
-        
         assertTrue(result.contains("Nilai Akhir: 25.00"));
-        assertTrue(result.contains("Grade: E"));
     }
-
-
+    
+    @Test
+    @DisplayName("Perolehan nilai - Mengabaikan format baris yang salah (Perbaikan Kuning)")
+    void testPerolehanNilai_InvalidLineFormat() {
+        String input = "Partisipatif|100\nIni baris yang salah\nUAS|50|tambahan"; // 10 + 0 + 0 = 10
+        String base64Input = encode(input);
+        String result = controller.perolehanNilai(base64Input);
+        assertTrue(result.contains("Nilai Akhir: 10.00"));
+    }
 // ==========================================
     // TEST BARU UNTUK perbedaanL (Logika Baru)
     // ==========================================

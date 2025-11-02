@@ -4,13 +4,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Base64;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-
 @RestController
 public class HomeController {
 
@@ -68,11 +61,11 @@ public class HomeController {
         return sb.toString();
     }
 
-@PostMapping("/perolehanNilai")
-    public String perolehanNilai(@RequestBody String strBase64) {
+// ANOTASI DIUBAH UNTUK MENERIMA PATH VARIABLE
+    @GetMapping("/perolehanNilai/{strBase64}")
+    public String perolehanNilai(@PathVariable String strBase64) { // <-- @RequestParam diubah menjadi @PathVariable
 
         // 1. Definisikan kategori dan bobot menggunakan array
-        // Keduanya harus dalam urutan yang SAMA
         String[] kategori = {
             "Partisipatif", "Tugas", "Kuis", "Proyek", "UTS", "UAS"
         };
@@ -85,7 +78,7 @@ public class HomeController {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0
         };
 
-        // 3. Decode Base64 (dari RequestBody) dan baca datanya
+        // 3. Decode Base64 (sekarang dari PathVariable) dan baca datanya
         try {
             String decoded = new String(Base64.getDecoder().decode(strBase64));
             // \\R adalah pemisah baris baru (bisa \n atau \r\n)
@@ -93,20 +86,17 @@ public class HomeController {
 
             for (String line : lines) {
                 String[] parts = line.split("\\|");
-                // Format yang diharapkan: "NAMA_KATEGORI|NILAI" (misal: "Tugas|90")
                 if (parts.length == 2) {
                     String namaKategori = parts[0].trim();
-                    
-                    // Cari kategori ini di array dan simpan nilainya
                     for (int i = 0; i < kategori.length; i++) {
                         if (kategori[i].equals(namaKategori)) {
                             try {
                                 double nilai = Double.parseDouble(parts[1].trim());
-                                skor[i] = nilai; // Simpan skor di indeks yang sesuai
+                                skor[i] = nilai;
                             } catch (NumberFormatException e) {
-                                // Abaikan jika nilainya bukan angka
+                                // Abaikan
                             }
-                            break; // Hentikan pencarian setelah kategori ditemukan
+                            break; 
                         }
                     }
                 }
@@ -115,23 +105,20 @@ public class HomeController {
             // Jika Base64 tidak valid, semua skor akan tetap 0.0
         }
 
-        // 4. Hitung Nilai Akhir dan bangun String output
+        // 4. Hitung Nilai Akhir (Logika ini semua SAMA)
         StringBuilder sb = new StringBuilder("Perolehan Nilai: ");
         double nilaiAkhir = 0.0;
 
         for (int i = 0; i < kategori.length; i++) {
-            double s = skor[i];          // Skor mentah
-            double b = bobot[i];         // Bobot
-            double nilaiTerbobot = s * b;    // Nilai terbobot
-
+            double s = skor[i];
+            double b = bobot[i];
+            double nilaiTerbobot = s * b;
             nilaiAkhir += nilaiTerbobot;
-
-            // Format string persis seperti di screenshot
             sb.append(String.format(">> %s: %.0f/100 (%.2f/%.0f) ",
                     kategori[i], s, nilaiTerbobot, b * 100));
         }
 
-        // 5. Tentukan Grade
+        // 5. Tentukan Grade (Logika ini semua SAMA)
         String grade;
         if (nilaiAkhir >= 85) grade = "A";
         else if (nilaiAkhir >= 70) grade = "B";
