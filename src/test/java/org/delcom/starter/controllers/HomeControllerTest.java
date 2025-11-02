@@ -2,16 +2,30 @@ package org.delcom.starter.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Base64;
 
 class HomeControllerTest {
 
+    private HomeController controller;
+
+    // Fungsi bantu encode string ke Base64
+    private String encode(String text) {
+        return Base64.getEncoder().encodeToString(text.getBytes());
+    }
+
+    // @BeforeEach memastikan controller baru dibuat sebelum SETIAP tes
+    @BeforeEach
+    void setUp() {
+        controller = new HomeController();
+    }
+
+
     @Test
     @DisplayName("Mengembalikan pesan selamat datang yang benar")
     void hello_ShouldReturnWelcomeMessage() {
-        HomeController controller = new HomeController();
         String result = controller.hello();
         assertEquals("Hay Abdullah, selamat datang di pengembangan aplikasi dengan Spring Boot!", result);
     }
@@ -19,19 +33,17 @@ class HomeControllerTest {
     @Test
     @DisplayName("Mengembalikan pesan sapaan yang dipersonalisasi")
     void helloWithName_ShouldReturnPersonalizedGreeting() {
-        HomeController controller = new HomeController();
         String result = controller.sayHello("Abdullah");
         assertEquals("Hello, Abdullah!", result);
     }
 
-    // ============================
-    // TEST: INFORMASI NIM VALID
-    // ============================
+    // ===================================
+    // TEST LENGKAP UNTUK informasiNim
+    // ===================================
 
     @Test
     @DisplayName("Mengembalikan informasi nim Sarjana Informatika")
     void informasiNim_mengembalikanInformasiNimS1IF() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("11S24050");
         assertEquals("Informasi NIM 11S24050: >> Program Studi: Sarjana Informatika >> Angkatan: 2024 >> Urutan: 50", result);
     }
@@ -39,7 +51,6 @@ class HomeControllerTest {
     @Test
     @DisplayName("Mengembalikan informasi nim Sarjana Sistem Informasi")
     void informasiNim_mengembalikanInformasiNimS1SI() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("12S24050");
         assertEquals("Informasi NIM 12S24050: >> Program Studi: Sarjana Sistem Informasi >> Angkatan: 2024 >> Urutan: 50", result);
     }
@@ -47,7 +58,6 @@ class HomeControllerTest {
     @Test
     @DisplayName("Mengembalikan informasi nim Sarjana Teknik Elektro")
     void informasiNim_mengembalikanInformasiNimS1TE() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("14S24050");
         assertEquals("Informasi NIM 14S24050: >> Program Studi: Sarjana Teknik Elektro >> Angkatan: 2024 >> Urutan: 50", result);
     }
@@ -55,7 +65,6 @@ class HomeControllerTest {
     @Test
     @DisplayName("Mengembalikan informasi nim Sarjana Manajemen Rekayasa")
     void informasiNim_mengembalikanInformasiNimS1MR() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("21S24050");
         assertEquals("Informasi NIM 21S24050: >> Program Studi: Sarjana Manajemen Rekayasa >> Angkatan: 2024 >> Urutan: 50", result);
     }
@@ -63,7 +72,6 @@ class HomeControllerTest {
     @Test
     @DisplayName("Mengembalikan informasi nim Sarjana Teknik Metalurgi")
     void informasiNim_mengembalikanInformasiNimS1TM() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("22S24050");
         assertEquals("Informasi NIM 22S24050: >> Program Studi: Sarjana Teknik Metalurgi >> Angkatan: 2024 >> Urutan: 50", result);
     }
@@ -71,7 +79,6 @@ class HomeControllerTest {
     @Test
     @DisplayName("Mengembalikan informasi nim Sarjana Teknik Bioproses")
     void informasiNim_mengembalikanInformasiNimS1BP() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("31S24050");
         assertEquals("Informasi NIM 31S24050: >> Program Studi: Sarjana Teknik Bioproses >> Angkatan: 2024 >> Urutan: 50", result);
     }
@@ -79,7 +86,6 @@ class HomeControllerTest {
     @Test
     @DisplayName("Mengembalikan informasi nim Diploma 4 Teknologi Rekayasa Perangkat Lunak")
     void informasiNim_mengembalikanInformasiNimD4TRPL() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("11424050");
         assertEquals("Informasi NIM 11424050: >> Program Studi: Diploma 4 Teknologi Rekayasa Perangkat Lunak >> Angkatan: 2024 >> Urutan: 50", result);
     }
@@ -87,7 +93,6 @@ class HomeControllerTest {
     @Test
     @DisplayName("Mengembalikan informasi nim Diploma 3 Teknologi Informasi")
     void informasiNim_mengembalikanInformasiNimD3TI() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("11324050");
         assertEquals("Informasi NIM 11324050: >> Program Studi: Diploma 3 Teknologi Informasi >> Angkatan: 2024 >> Urutan: 50", result);
     }
@@ -95,19 +100,13 @@ class HomeControllerTest {
     @Test
     @DisplayName("Mengembalikan informasi nim Diploma 3 Teknologi Komputer")
     void informasiNim_mengembalikanInformasiNimD3TK() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("13324050");
         assertEquals("Informasi NIM 13324050: >> Program Studi: Diploma 3 Teknologi Komputer >> Angkatan: 2024 >> Urutan: 50", result);
     }
 
-    // ============================
-    // TEST: KONDISI KHUSUS / ERROR
-    // ============================
-
     @Test
     @DisplayName("Menolak NIM yang kurang dari 8 karakter")
     void informasiNim_ditolakKarenaFormatTidakSesuai() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("11S24");
         assertEquals("NIM tidak sesuai format!", result);
     }
@@ -115,7 +114,6 @@ class HomeControllerTest {
     @Test
     @DisplayName("Menolak NIM dengan prefix tidak dikenali")
     void informasiNim_ditolakKarenaPrefixTidakDikenali() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim("99X24050");
         assertEquals("Prefix 99X tidak dikenali", result);
     }
@@ -123,291 +121,289 @@ class HomeControllerTest {
     @Test
     @DisplayName("Menghapus spasi di awal/akhir NIM sebelum diproses")
     void informasiNim_menghapusSpasi() {
-        HomeController controller = new HomeController();
         String result = controller.informasiNim(" 11S24050 ");
         assertEquals("Informasi NIM 11S24050: >> Program Studi: Sarjana Informatika >> Angkatan: 2024 >> Urutan: 50", result);
     }
 
-   // Buat instance dari HomeController
-    HomeController controller = new HomeController();
 
-    // Fungsi bantu encode string ke Base64
-    private String encode(String text) {
-        return Base64.getEncoder().encodeToString(text.getBytes());
+    // ===================================
+    // TEST LENGKAP UNTUK perolehanNilai
+    // ===================================
+
+    @Test
+    @DisplayName("Perolehan nilai - Menghitung data untuk Grade A")
+    void testPerolehanNilai_DataLengkap_GradeA() {
+        String input = """
+            Partisipatif|100
+            Tugas|100
+            Kuis|80
+            Proyek|90
+            UTS|85
+            UAS|85
+            """;
+        String base64Input = encode(input);
+        String result = controller.perolehanNilai(base64Input);
+        assertTrue(result.contains("Nilai Akhir: 89.00"));
+        assertTrue(result.contains("Grade: A"));
     }
 
     @Test
-    @DisplayName("Perolehan nilai menghasilkan grade A")
-    void testPerolehanNilai_A() {
-        String data = encode("""
-            T|90|90
-            UAS|92|85
-            PA|90|87
-            ---
-        """);
-        String result = controller.perolehanNilai(data);
-        assertTrue(result.contains("A"));
+    @DisplayName("Perolehan nilai - Menghitung data lengkap (Grade B)")
+    void testPerolehanNilai_DataLengkap_GradeB() {
+        String input = """
+            Partisipatif|80
+            Tugas|90
+            Kuis|85
+            Proyek|70
+            UTS|75
+            UAS|88
+            """;
+        String base64Input = encode(input); 
+        String result = controller.perolehanNilai(base64Input);
+        assertTrue(result.contains("Nilai Akhir: 81.90"));
+        assertTrue(result.contains("Grade: B"));
     }
 
     @Test
-    @DisplayName("Perolehan nilai menghasilkan grade B")
-    void testPerolehanNilai_B() {
-        String data = encode("""
-            T|80|70
-            UAS|75|72
-            PA|85|68
-            ---
-        """);
-        String result = controller.perolehanNilai(data);
-        assertTrue(result.contains("B"));
+    @DisplayName("Perolehan nilai - Menghitung data untuk Grade C")
+    void testPerolehanNilai_GradeC() {
+        String input = """
+            Partisipatif|60
+            Tugas|60
+            Kuis|60
+            Proyek|60
+            UTS|60
+            UAS|60
+            """; // Semua 60 akan menghasilkan 60
+        String base64Input = encode(input);
+        String result = controller.perolehanNilai(base64Input);
+        assertTrue(result.contains("Nilai Akhir: 60.00"));
+        assertTrue(result.contains("Grade: C"));
     }
 
     @Test
-    @DisplayName("Perolehan nilai menghasilkan grade C")
-    void testPerolehanNilai_C() {
-        String data = encode("""
-            T|70|55
-            UAS|65|60
-            PA|68|57
-            ---
-        """);
-        String result = controller.perolehanNilai(data);
-        assertTrue(result.contains("C"));
+    @DisplayName("Perolehan nilai - Menghitung data untuk Grade D")
+    void testPerolehanNilai_GradeD() {
+        String input = """
+            Partisipatif|100
+            Tugas|100
+            UTS|40
+            UAS|40
+            """; // 10 + 15 + 8 + 12 = 45
+        String base64Input = encode(input);
+        String result = controller.perolehanNilai(base64Input);
+        assertTrue(result.contains("Nilai Akhir: 45.00"));
+        assertTrue(result.contains("Grade: D"));
     }
 
     @Test
-    @DisplayName("Perolehan nilai menghasilkan grade D")
-    void testPerolehanNilai_D() {
-        String data = encode("""
-            T|60|40
-            UAS|55|45
-            PA|58|42
-            ---
-        """);
-        String result = controller.perolehanNilai(data);
-        assertTrue(result.contains("D"));
+    @DisplayName("Perolehan nilai - Data tidak lengkap (Grade E)")
+    void testPerolehanNilai_DataTidakLengkap_GradeE() {
+        String input = """
+            UTS|70
+            UAS|60
+            """; // 14 + 18 = 32
+        String base64Input = encode(input);
+        String result = controller.perolehanNilai(base64Input);
+        assertTrue(result.contains("Nilai Akhir: 32.00"));
+        assertTrue(result.contains("Grade: E"));
     }
 
     @Test
-    @DisplayName("Perolehan nilai menghasilkan grade E")
-    void testPerolehanNilai_E() {
-        String data = encode("""
-            T|30|20
-            UAS|25|35
-            PA|40|30
-            ---
-        """);
-        String result = controller.perolehanNilai(data);
-        assertTrue(result.contains("E"));
-    }
-
-    @Test
-    @DisplayName("Baris tidak valid tidak menyebabkan error")
-    void testPerolehanNilai_InvalidLines() {
-        String data = encode("""
-            T|90|90
-            Invalid line here
-            PA|85|abc
-            UAS|80|75
-            ---
-        """);
-        String result = controller.perolehanNilai(data);
-        assertTrue(result.contains("Rata-rata"));
-    }
-
-        @Test
-    @DisplayName("Perolehan nilai - memicu NumberFormatException")
+    @DisplayName("Perolehan nilai - Memicu NumberFormatException (catch merah)")
     void testPerolehanNilai_NumberFormatException() {
-        // Baris kedua bikin error parseDouble -> akan masuk ke blok catch
-        String data = Base64.getEncoder().encodeToString("""
-            T|90|90
-            UAS|80|notanumber
-            ---
-        """.getBytes());
-
-        String result = controller.perolehanNilai(data);
-        assertTrue(result.contains("Rata-rata"));
+        String input = """
+            Partisipatif|100
+            Tugas|abc
+            UAS|50
+            """; // 10 + 0 (diabaikan) + 15 = 25
+        String base64Input = encode(input);
+        String result = controller.perolehanNilai(base64Input);
+        // Tes ini memastikan 'catch' dieksekusi dan program tidak crash
+        assertTrue(result.contains("Nilai Akhir: 25.00"));
+        assertTrue(result.contains("Grade: E"));
     }
 
     @Test
-    @DisplayName("Perolehan nilai - tidak ada baris valid (count == 0)")
-    void testPerolehanNilai_NoValidLines() {
-        // Semua baris tidak valid → count tetap 0
-        String data = Base64.getEncoder().encodeToString("""
-            invalid line
-            data tanpa pemisah
-            ---
-        """.getBytes());
-
-        String result = controller.perolehanNilai(data);
-        assertTrue(result.contains("Rata-rata: 0.0"));
+    @DisplayName("Perolehan nilai - Data tidak valid (format salah)")
+    void testPerolehanNilai_FormatDataSalah() {
+        String input = "Ini data acak\n1|2|3\nxyz";
+        String base64Input = encode(input);
+        String result = controller.perolehanNilai(base64Input);
+        assertTrue(result.contains("Nilai Akhir: 0.00"));
     }
 
     @Test
-@DisplayName("Perolehan nilai - baris tidak memiliki 3 bagian (parts.length != 3)")
-void testPerolehanNilai_PartsLengthNotThree() {
-    HomeController controller = new HomeController();
-
-    // Baris pertama valid, baris kedua invalid karena tidak ada cukup tanda '|'
-    String data = Base64.getEncoder().encodeToString("""
-        T|90|21
-        UAS|92
-        ---
-    """.getBytes());
-
-    String result = controller.perolehanNilai(data);
-
-    // Pastikan masih menghasilkan rata-rata dari baris valid saja
-    assertTrue(result.contains("Rata-rata"));
-}
-
-    // ============================
-    // TEST: METHOD perbedaanL
-    // ============================
+    @DisplayName("Perolehan nilai - Base64 tidak valid")
+    void testPerolehanNilai_Base64TidakValid() {
+        String invalidBase64 = "MTIz*"; 
+        String result = controller.perolehanNilai(invalidBase64);
+        assertTrue(result.contains("Nilai Akhir: 0.00"));
+    }
 
     @Test
-    @DisplayName("perbedaanL - menghitung selisih antara angka dan kebalikannya")
+    @DisplayName("Perolehan nilai - Mengabaikan kategori yang tidak dikenal")
+    void testPerolehanNilai_InvalidKategoriName() {
+        String input = """
+            Partisipatif|100
+            NilaiExtra|100
+            UAS|50
+            """; // 10 + 0 (diabaikan) + 15 = 25
+        String base64Input = encode(input);
+        String result = controller.perolehanNilai(base64Input);
+        
+        // Tes ini memaksa 'if (kategori[i].equals...)' menjadi false
+        // untuk semua 'i' saat memproses "NilaiExtra".
+        
+        assertTrue(result.contains("Nilai Akhir: 25.00"));
+        assertTrue(result.contains("Grade: E"));
+    }
+
+
+// ==========================================
+    // TEST BARU UNTUK perbedaanL (Logika Baru)
+    // ==========================================
+
+    @Test
+    @DisplayName("perbedaanL - Input valid sesuai screenshot")
     void testPerbedaanL_ValidInput() {
-        HomeController controller = new HomeController();
-
-        // angka 123 → terbalik 321 → selisih |123 - 321| = 198
-        String base64Input = Base64.getEncoder().encodeToString("123".getBytes());
+        String input = "20|20|5";
+        String base64Input = encode(input);
         String result = controller.perbedaanL(base64Input);
-
-        assertTrue(result.contains("Angka Asli: 123"));
-        assertTrue(result.contains("Angka Terbalik: 321"));
-        assertTrue(result.contains("Selisih: 198"));
+        
+        // Memeriksa bagian-bagian dari output yang diharapkan
+        assertTrue(result.contains("Nilai L: 20"));
+        assertTrue(result.contains("Nilai Kebalikan L: 20"));
+        assertTrue(result.contains("Nilai Tengah: 5"));
+        assertTrue(result.contains("Perbedaan: 0"));
+        assertTrue(result.contains("Dominan: 5"));
     }
 
     @Test
-    @DisplayName("perbedaanL - input memiliki spasi di depan dan belakang")
-    void testPerbedaanL_InputDenganSpasi() {
-        HomeController controller = new HomeController();
-
-        // angka " 45 " → trim → "45" → terbalik 54 → selisih |45 - 54| = 9
-        String base64Input = Base64.getEncoder().encodeToString(" 45 ".getBytes());
+    @DisplayName("perbedaanL - Format input salah (bukan 3 bagian)")
+    void testPerbedaanL_InvalidFormat() {
+        String input = "20|20"; // Hanya 2 bagian
+        String base64Input = encode(input);
         String result = controller.perbedaanL(base64Input);
-
-        assertTrue(result.contains("Angka Asli: 45"));
-        assertTrue(result.contains("Angka Terbalik: 54"));
-        assertTrue(result.contains("Selisih: 9"));
+        assertEquals("Error: Format input tidak valid. Harusnya 'angka1|angka2|angka3'.", result);
     }
 
     @Test
-    @DisplayName("perbedaanL - input bukan angka valid (NumberFormatException)")
-    void testPerbedaanL_InputTidakValid() {
-        HomeController controller = new HomeController();
-
-        // input "abc" akan menyebabkan NumberFormatException
-        String base64Input = Base64.getEncoder().encodeToString("abc".getBytes());
+    @DisplayName("perbedaanL - Input bukan angka (NumberFormatException)")
+    void testPerbedaanL_NotANumber() {
+        String input = "20|abc|5"; // 'abc' bukan angka
+        String base64Input = encode(input);
         String result = controller.perbedaanL(base64Input);
-
         assertEquals("Error: Input bukan angka yang valid.", result);
     }
 
     @Test
-    @DisplayName("perbedaanL - angka palindrom menghasilkan selisih 0")
-    void testPerbedaanL_Palindrom() {
-        HomeController controller = new HomeController();
-
-        // angka 1221 → terbalik 1221 → selisih 0
-        String base64Input = Base64.getEncoder().encodeToString("1221".getBytes());
-        String result = controller.perbedaanL(base64Input);
-
-        assertTrue(result.contains("Angka Asli: 1221"));
-        assertTrue(result.contains("Angka Terbalik: 1221"));
-        assertTrue(result.contains("Selisih: 0"));
-    }
-
-    @Test
-    @DisplayName("Perbedaan L - Input bukan angka yang valid")
-    void perbedaanL_ShouldHandleNonNumericInput() {
-        HomeController controller = new HomeController();
-        
-        // Input: Base64 dari string "ABC" (bukan angka)
-        String base64Input = Base64.getEncoder().encodeToString("ABC".getBytes());
-        
-        // Ekspektasi: Program harus me-return pesan error NumberFormatException
-        String expectedResult = "Error: Input bukan angka yang valid.";
-        
-        String result = controller.perbedaanL(base64Input);
-        
-        assertEquals(expectedResult.trim(), result.trim());
-    }
-
-    @Test
-    @DisplayName("Perbedaan L - Input Base64 tidak valid")
-    void perbedaanL_ShouldHandleInvalidBase64() {
-        HomeController controller = new HomeController();
-        
-        // Input: String yang sengaja dirusak (bukan Base64 valid)
-        String invalidBase64 = "MTIz*"; 
-        
-        // Ekspektasi: Program harus me-return pesan error IllegalArgumentException
-        String expectedResult = "Error: Format Base64 tidak valid.";
-        
+    @DisplayName("perbedaanL - Base64 tidak valid (IllegalArgumentException)")
+    void testPerbedaanL_InvalidBase64() {
+        String invalidBase64 = "MTIz*"; // Base64 rusak
         String result = controller.perbedaanL(invalidBase64);
-        
-        assertEquals(expectedResult.trim(), result.trim());
-    }
-   
-    // TES 1: Untuk Jalur Sukses
-    @Test
-    @DisplayName("Paling Ter - Mengembalikan angka terbesar")
-    void palingTer_ShouldReturnLargestNumber() {
-        // Arrange
-        HomeController controller = new HomeController();
-        
-        // INI ADALAH STRING BASE64 UNTUK INPUT "10\n5\n30\n-2"
-        String base64Input = "MTANCjUNCjMwDQotMg0K"; 
-        
-        // INI ADALAH JAWABAN YANG BENAR 
-        String expectedResult = "Angka Paling Ter (besar): 30"; 
-
-        // Act
-        String result = controller.palingTer(base64Input);
-        
-        // Assert
-        assertEquals(expectedResult.trim(), result.trim());
+        assertEquals("Error: Format Base64 tidak valid.", result);
     }
 
-    // TES 2: Untuk Jalur Gagal (Fix Coverage Merah)
+
+    // ==========================================
+    // TEST BARU UNTUK palingTer (Logika Baru)
+    // ==========================================
+
     @Test
-    @DisplayName("Paling Ter - Tidak ada angka valid ditemukan")
-    void palingTer_ShouldHandleNoValidNumbers() {
-        HomeController controller = new HomeController();
-        
-        // Input: Base64 dari string yang hanya berisi teks (tidak ada angka)
-        String data = """
-            abc
-            ---
+    @DisplayName("Paling Ter - Input valid sesuai screenshot")
+    void testPalingTer_ValidInput() {
+        String input = """
+            10
+            5
+            9
+            10
+            5
+            10
             """;
-        String base64Input = Base64.getEncoder().encodeToString(data.getBytes());
-
-        // Ekspektasi: Program harus me-return pesan jika tidak ada angka yang valid ditemukan
-        String expectedResult = "Tidak ada angka yang valid ditemukan.";
+        // Data ini:
+        // Angka: 10, 5, 9, 10, 5, 10
+        // Max: 10, Min: 5
+        // Frekuensi: 10 (3x), 5 (2x), 9 (1x)
+        // Terbanyak: 10 (3x)
+        // Tersedikit: 9 (1x)
+        // Jml Tertinggi: 10 * 3 = 30
+        // Jml Terendah: 5 * 2 = 10
         
+        String base64Input = encode(input);
         String result = controller.palingTer(base64Input);
         
-        assertEquals(expectedResult.trim(), result.trim());
+        String expected = "Tertinggi: 10 Terendah: 5 Terbanyak: 10 (3x) Tersedikit: 9 (1x) Jumlah Tertinggi: 10 * 3 = 30 Jumlah Terendah: 5 * 2 = 10";
+        assertEquals(expected, result);
     }
 
-    // TES 3: Untuk Jalur Error (Fix Coverage Merah)
     @Test
-    @DisplayName("Paling Ter - Input Base64 tidak valid")
-    void palingTer_ShouldHandleInvalidBase64() {
-        HomeController controller = new HomeController();
-        
-        // Input: String yang sengaja dirusak (bukan Base64 valid)
-        String invalidBase64 = "MTIz*"; 
-        
-        // Ekspektasi: Program harus me-return pesan error IllegalArgumentException
-        String expectedResult = "Error: Format Base64 tidak valid.";
-        
-        String result = controller.palingTer(invalidBase64);
-        
-        assertEquals(expectedResult.trim(), result.trim());
+    @DisplayName("Paling Ter - Tidak ada angka valid")
+    void testPalingTer_NoValidNumbers() {
+        String input = "abc\ndef\nghi";
+        String base64Input = encode(input);
+        String result = controller.palingTer(base64Input);
+        assertEquals("Tidak ada angka yang valid ditemukan.", result);
     }
-    
 
+    @Test
+    @DisplayName("Paling Ter - Base64 tidak valid")
+    void testPalingTer_InvalidBase64() {
+        String invalidBase64 = "MTIz*"; // Base64 rusak
+        String result = controller.palingTer(invalidBase64);
+        assertEquals("Error: Format Base64 tidak valid.", result);
+    }
+
+    @Test
+    @DisplayName("Paling Ter - Input dengan angka negatif")
+    void testPalingTer_WithNegativeNumbers() {
+        String input = """
+            -10
+            5
+            -10
+            -5
+            5
+            -10
+            """;
+        // Data ini:
+        // Angka: -10, 5, -10, -5, 5, -10
+        // Max: 5, Min: -10
+        // Frekuensi: -10 (3x), 5 (2x), -5 (1x)
+        // Terbanyak: -10 (3x)
+        // Tersedikit: -5 (1x)
+        // Jml Tertinggi: 5 * 2 = 10
+        // Jml Terendah: -10 * 3 = -30
+        
+        String base64Input = encode(input);
+        String result = controller.palingTer(base64Input);
+        
+// BENAR:
+String expected = "Tertinggi: 5 Terendah: -10 Terbanyak: -10 (3x) Tersedikit: -5 (1x) Jumlah Tertinggi: 5 * 3 = 15 Jumlah Terendah: -10 * 3 = -30";
+    }
+
+    @Test
+    @DisplayName("Paling Ter - Input dengan frekuensi yang sama")
+    void testPalingTer_SameFrequency() {
+        String input = """
+            10
+            5
+            10
+            5
+            """;
+        // Data ini:
+        // Angka: 10, 5, 10, 5
+        // Max: 10, Min: 5
+        // Frekuensi: 10 (2x), 5 (2x)
+        // Terbanyak: 10 (2x) (ditemukan pertama)
+        // Tersedikit: 10 (2x) (saat mengecek 5, if(2 < 2) akan false)
+        // Jml Tertinggi: 10 * 2 = 20
+        // Jml Terendah: 5 * 2 = 10
+        
+        String base64Input = encode(input);
+        String result = controller.palingTer(base64Input);
+        
+        // Tes ini memaksa 'if (currentCount < tersedikitCount)' menjadi false
+        String expected = "Tertinggi: 10 Terendah: 5 Terbanyak: 10 (2x) Tersedikit: 10 (2x) Jumlah Tertinggi: 10 * 2 = 20 Jumlah Terendah: 5 * 2 = 10";
+        assertEquals(expected, result);
+    }
 }

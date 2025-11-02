@@ -68,65 +68,111 @@ public class HomeController {
         return sb.toString();
     }
 
-       @PostMapping("/perolehanNilai")
+@PostMapping("/perolehanNilai")
     public String perolehanNilai(@RequestBody String strBase64) {
-        // Decode Base64
-        String decoded = new String(Base64.getDecoder().decode(strBase64));
-        String[] lines = decoded.split("\\n");
 
-        double totalNilai = 0;
-        int count = 0;
+        // 1. Definisikan kategori dan bobot menggunakan array
+        // Keduanya harus dalam urutan yang SAMA
+        String[] kategori = {
+            "Partisipatif", "Tugas", "Kuis", "Proyek", "UTS", "UAS"
+        };
+        double[] bobot = {
+            0.10, 0.15, 0.10, 0.15, 0.20, 0.30
+        };
+        
+        // 2. Inisialisasi array untuk menyimpan skor (default 0.0)
+        double[] skor = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        };
 
-        for (String line : lines) {
-            if (line.contains("|")) {
+        // 3. Decode Base64 (dari RequestBody) dan baca datanya
+        try {
+            String decoded = new String(Base64.getDecoder().decode(strBase64));
+            // \\R adalah pemisah baris baru (bisa \n atau \r\n)
+            String[] lines = decoded.split("\\R"); 
+
+            for (String line : lines) {
                 String[] parts = line.split("\\|");
-                if (parts.length == 3) {
-                    try {
-                        double nilai = Double.parseDouble(parts[2]);
-                        totalNilai += nilai;
-                        count++;
-                    } catch (NumberFormatException e) {
-                        // skip invalid line
+                // Format yang diharapkan: "NAMA_KATEGORI|NILAI" (misal: "Tugas|90")
+                if (parts.length == 2) {
+                    String namaKategori = parts[0].trim();
+                    
+                    // Cari kategori ini di array dan simpan nilainya
+                    for (int i = 0; i < kategori.length; i++) {
+                        if (kategori[i].equals(namaKategori)) {
+                            try {
+                                double nilai = Double.parseDouble(parts[1].trim());
+                                skor[i] = nilai; // Simpan skor di indeks yang sesuai
+                            } catch (NumberFormatException e) {
+                                // Abaikan jika nilainya bukan angka
+                            }
+                            break; // Hentikan pencarian setelah kategori ditemukan
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            // Jika Base64 tidak valid, semua skor akan tetap 0.0
         }
 
-        double rataRata = (count > 0) ? totalNilai / count : 0;
+        // 4. Hitung Nilai Akhir dan bangun String output
+        StringBuilder sb = new StringBuilder("Perolehan Nilai: ");
+        double nilaiAkhir = 0.0;
 
+        for (int i = 0; i < kategori.length; i++) {
+            double s = skor[i];          // Skor mentah
+            double b = bobot[i];         // Bobot
+            double nilaiTerbobot = s * b;    // Nilai terbobot
+
+            nilaiAkhir += nilaiTerbobot;
+
+            // Format string persis seperti di screenshot
+            sb.append(String.format(">> %s: %.0f/100 (%.2f/%.0f) ",
+                    kategori[i], s, nilaiTerbobot, b * 100));
+        }
+
+        // 5. Tentukan Grade
         String grade;
-        if (rataRata >= 85) grade = "A";
-        else if (rataRata >= 70) grade = "B";
-        else if (rataRata >= 55) grade = "C";
-        else if (rataRata >= 40) grade = "D";
+        if (nilaiAkhir >= 85) grade = "A";
+        else if (nilaiAkhir >= 70) grade = "B";
+        else if (nilaiAkhir >= 55) grade = "C";
+        else if (nilaiAkhir >= 40) grade = "D";
         else grade = "E";
 
-        return "Rata-rata: " + rataRata + " → Nilai: " + grade;
-    }
+        // 6. Tambahkan bagian akhir dari string
+        sb.append(String.format(">> Nilai Akhir: %.2f >> Grade: %s", nilaiAkhir, grade));
 
-// METHOD 4 (perbedaanL)
+        return sb.toString();
+    }
+// METHOD 4 (perbedaanL) - PERBAIKAN
 // ==============
 @GetMapping("/perbedaanL/{strBase64}")
 public String perbedaanL(@PathVariable String strBase64) {
     try {
-        // 1. Dekode Base64 → dapatkan angka asli dalam bentuk string
-        // Menggunakan java.util.Base64;
+        // 1. Dekode Base64
         String inputAsli = new String(Base64.getDecoder().decode(strBase64));
-        String angkaStr = inputAsli.trim(); // Hapus spasi di depan/belakang
+        // 2. Pisahkan input menjadi 3 bagian (misal: "20|20|5")
+        String[] parts = inputAsli.trim().split("\\|");
 
-        // 2. Ubah menjadi integer
-        int angka = Integer.parseInt(angkaStr);
-        
-        // 3. Balikkan string angka dan ubah kembali menjadi integer
-        int angkaTerbalik = Integer.parseInt(new StringBuilder(angkaStr).reverse().toString());
-        
-        // 4. Hitung selisih absolut
-        int selisih = Math.abs(angka - angkaTerbalik);
+        // 3. Pastikan formatnya benar (3 bagian)
+        if (parts.length == 3) {
+            int nilaiL = Integer.parseInt(parts[0]);
+            int nilaiKebalikanL = Integer.parseInt(parts[1]);
+            int nilaiTengah = Integer.parseInt(parts[2]);
+            
+            // 4. Hitung perbedaan
+            int perbedaan = Math.abs(nilaiL - nilaiKebalikanL);
+            
+            // 5. Tentukan dominan (sesuai output, tampaknya ini adalah nilaiTengah)
+            int dominan = nilaiTengah;
 
-        // 5. Kembalikan hasil
-        return "Angka Asli: " + angka + "<br>" +
-               "Angka Terbalik: " + angkaTerbalik + "<br>" +
-               "Selisih: " + selisih;
+            // 6. Kembalikan hasil sesuai format screenshot
+            return "Nilai L: " + nilaiL + ": Nilai Kebalikan L: " + nilaiKebalikanL + 
+                   ": Nilai Tengah: " + nilaiTengah + " Perbedaan: " + perbedaan + 
+                   " Dominan: " + dominan;
+        } else {
+            return "Error: Format input tidak valid. Harusnya 'angka1|angka2|angka3'.";
+        }
 
     } catch (NumberFormatException e) {
         // Menangani jika string hasil dekode bukan merupakan angka
@@ -134,43 +180,108 @@ public String perbedaanL(@PathVariable String strBase64) {
     } catch (IllegalArgumentException e) {
         // Menangani jika string Base64 tidak valid
         return "Error: Format Base64 tidak valid.";
-    
     }
 }
 
-// Method 4: Paling Ter (Perbaikan Error Handling)
-    @GetMapping("/palingTer/{strBase64}")
-    public String palingTer(@PathVariable String strBase64) {
-        try {
-            // 1. DECODE Base64 (PINDAHKAN KE DALAM TRY)
-            byte[] decodedBytes = Base64.getDecoder().decode(strBase64);
-            String inputAsli = new String(decodedBytes);
+// Method 4: Paling Ter (Perbaikan Error Handling) - PERBAIKAN
+@GetMapping("/palingTer/{strBase64}")
+public String palingTer(@PathVariable String strBase64) {
+    try {
+        // 1. DECODE Base64
+        byte[] decodedBytes = Base64.getDecoder().decode(strBase64);
+        String inputAsli = new String(decodedBytes);
 
-            // 2. LOGIKA PROGRAM
-            String[] baris = inputAsli.split("\\R");
-            int palingBesar = Integer.MIN_VALUE; 
+        // 2. LOGIKA PROGRAM
+        String[] baris = inputAsli.split("\\R");
+        
+        // Buat array untuk menyimpan angka-angka
+        int[] angka = new int[baris.length];
+        int count = 0; // Jumlah angka yang valid
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
 
-            for (String b : baris) {
-                try {
-                    int angka = Integer.parseInt(b.trim()); 
-                    if (angka > palingBesar) {
-                        palingBesar = angka;
-                    }
-                } catch (NumberFormatException e) {
-                    // Abaikan baris yang bukan angka
+        // Loop pertama: Parse angka, hitung min & max
+        for (String b : baris) {
+            try {
+                int n = Integer.parseInt(b.trim());
+                angka[count] = n; // Simpan angka valid
+                count++;
+                
+                if (n > max) max = n;
+                if (n < min) min = n;
+                
+            } catch (NumberFormatException e) {
+                // Abaikan baris yang bukan angka
+            }
+        }
+
+        // 3. RETURN jika tidak ada angka
+        if (count == 0) {
+            return "Tidak ada angka yang valid ditemukan.";
+        }
+        
+        // 4. LOGIKA FREKUENSI (Tanpa Map)
+        int terbanyakVal = 0;
+        int terbanyakCount = 0;
+        int tersedikitVal = 0;
+        int tersedikitCount = Integer.MAX_VALUE;
+        int terendahCount = 0; // Hitung frekuensi angka 'min'
+
+        for (int i = 0; i < count; i++) {
+            int currentNum = angka[i];
+            int currentCount = 0;
+            
+            // Cek apakah angka ini sudah pernah dihitung sebelumnya
+            boolean seen = false;
+            for (int j = 0; j < i; j++) {
+                if (angka[j] == currentNum) {
+                    seen = true;
+                    break;
                 }
             }
+            if (seen) continue; // Lewati jika sudah dihitung
 
-            // 3. RETURN
-            if (palingBesar == Integer.MIN_VALUE) {
-                return "Tidak ada angka yang valid ditemukan.";
-            } else {
-                return "Angka Paling Ter (besar): " + palingBesar;
+            // Hitung frekuensi 'currentNum'
+            for (int j = 0; j < count; j++) {
+                if (angka[j] == currentNum) {
+                    currentCount++;
+                }
             }
             
-        } catch (IllegalArgumentException e) {
-             // 4. CATCH INI SEKARANG AKAN BERFUNGSI
-            return "Error: Format Base64 tidak valid.";
+            // Update Terbanyak
+            if (currentCount > terbanyakCount) {
+                terbanyakCount = currentCount;
+                terbanyakVal = currentNum;
+            }
+            
+            // Update Tersedikit
+            if (currentCount < tersedikitCount) {
+                tersedikitCount = currentCount;
+                tersedikitVal = currentNum;
+            }
         }
+        
+        // Hitung frekuensi angka Terendah (min)
+        for (int i = 0; i < count; i++) {
+            if (angka[i] == min) {
+                terendahCount++;
+            }
+        }
+
+        // 5. Hitung Jumlah
+        long jumlahTertinggi = (long)max * terbanyakCount;
+        long jumlahTerendah = (long)min * terendahCount;
+
+        // 6. Kembalikan hasil sesuai format screenshot
+        return "Tertinggi: " + max + " Terendah: " + min + 
+               " Terbanyak: " + terbanyakVal + " (" + terbanyakCount + "x) Tersedikit: " + 
+               tersedikitVal + " (" + tersedikitCount + "x) Jumlah Tertinggi: " + 
+               max + " * " + terbanyakCount + " = " + jumlahTertinggi + 
+               " Jumlah Terendah: " + min + " * " + terendahCount + " = " + jumlahTerendah;
+        
+    } catch (IllegalArgumentException e) {
+         // 4. CATCH INI SEKARANG AKAN BERFUNGSI
+        return "Error: Format Base64 tidak valid.";
     }
+}
 }
