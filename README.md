@@ -18,7 +18,7 @@
 command: `mvn clean install`
 
 ### Menjalankan Aplikasi
-
+mvn spring-boot:run
 Command: `mvn spring-boot:run`
 
 URL: http://localhost:8080

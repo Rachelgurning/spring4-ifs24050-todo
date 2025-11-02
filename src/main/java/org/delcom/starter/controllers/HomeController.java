@@ -134,36 +134,43 @@ public String perbedaanL(@PathVariable String strBase64) {
     } catch (IllegalArgumentException e) {
         // Menangani jika string Base64 tidak valid
         return "Error: Format Base64 tidak valid.";
+    
     }
 }
 
-/// Method 4: Paling Ter (KODE LENGKAP)
-@GetMapping("/palingTer/{strBase64}")
-public String palingTer(@PathVariable String strBase64) {
-    // 1. DECODE Base64 untuk mendapatkan input asli
-    byte[] decodedBytes = Base64.getDecoder().decode(strBase64);
-    String inputAsli = new String(decodedBytes);
-
-    // --- LOGIKA PROGRAM: Mencari Angka Terbesar ---
-    String[] baris = inputAsli.split("\\R");
-    int palingBesar = Integer.MIN_VALUE; 
-
-    for (String b : baris) {
+// Method 4: Paling Ter (Perbaikan Error Handling)
+    @GetMapping("/palingTer/{strBase64}")
+    public String palingTer(@PathVariable String strBase64) {
         try {
-            int angka = Integer.parseInt(b.trim()); 
-            if (angka > palingBesar) {
-                palingBesar = angka;
+            // 1. DECODE Base64 (PINDAHKAN KE DALAM TRY)
+            byte[] decodedBytes = Base64.getDecoder().decode(strBase64);
+            String inputAsli = new String(decodedBytes);
+
+            // 2. LOGIKA PROGRAM
+            String[] baris = inputAsli.split("\\R");
+            int palingBesar = Integer.MIN_VALUE; 
+
+            for (String b : baris) {
+                try {
+                    int angka = Integer.parseInt(b.trim()); 
+                    if (angka > palingBesar) {
+                        palingBesar = angka;
+                    }
+                } catch (NumberFormatException e) {
+                    // Abaikan baris yang bukan angka
+                }
             }
-        } catch (NumberFormatException e) {
-            // Abaikan baris yang bukan angka
+
+            // 3. RETURN
+            if (palingBesar == Integer.MIN_VALUE) {
+                return "Tidak ada angka yang valid ditemukan.";
+            } else {
+                return "Angka Paling Ter (besar): " + palingBesar;
+            }
+            
+        } catch (IllegalArgumentException e) {
+             // 4. CATCH INI SEKARANG AKAN BERFUNGSI
+            return "Error: Format Base64 tidak valid.";
         }
     }
-
-    // --- RETURN SEBAGAI SATU STRING ---
-    if (palingBesar == Integer.MIN_VALUE) {
-        return "Tidak ada angka yang valid ditemukan.";
-    } else {
-        return "Angka Paling Ter (besar): " + palingBesar;
-    }
-}
 }

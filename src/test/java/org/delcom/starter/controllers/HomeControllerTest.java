@@ -350,32 +350,34 @@ void testPerolehanNilai_PartsLengthNotThree() {
         
         assertEquals(expectedResult.trim(), result.trim());
     }
-    
-   @Test
-@DisplayName("Tes method palingTer")
-void palingTer_ShouldProcessBase64() {
-    // Arrange
-    HomeController controller = new HomeController();
+   
+    // TES 1: Untuk Jalur Sukses
+    @Test
+    @DisplayName("Paling Ter - Mengembalikan angka terbesar")
+    void palingTer_ShouldReturnLargestNumber() {
+        // Arrange
+        HomeController controller = new HomeController();
+        
+        // INI ADALAH STRING BASE64 UNTUK INPUT "10\n5\n30\n-2"
+        String base64Input = "MTANCjUNCjMwDQotMg0K"; 
+        
+        // INI ADALAH JAWABAN YANG BENAR 
+        String expectedResult = "Angka Paling Ter (besar): 30"; 
 
-    // STRING BASE64 UNTUK INPUT "10\n5\n30\n-2"
-    String base64Input = "MTANCjUNCjMwDQotMg0K"; 
+        // Act
+        String result = controller.palingTer(base64Input);
+        
+        // Assert
+        assertEquals(expectedResult.trim(), result.trim());
+    }
 
-    // JAWABAN YANG BENAR 
-    String expectedResult = "Angka Paling Ter (besar): 30"; 
-
-    // Act
-    String result = controller.palingTer(base64Input);
-
-    // Assert
-    assertEquals(expectedResult.trim(), result.trim());
-}
-
-@Test
+    // TES 2: Untuk Jalur Gagal (Fix Coverage Merah)
+    @Test
     @DisplayName("Paling Ter - Tidak ada angka valid ditemukan")
     void palingTer_ShouldHandleNoValidNumbers() {
         HomeController controller = new HomeController();
         
-        // Input: Base64 dari string yang hanya berisi teks atau data yang tidak valid
+        // Input: Base64 dari string yang hanya berisi teks (tidak ada angka)
         String data = """
             abc
             ---
@@ -389,4 +391,23 @@ void palingTer_ShouldProcessBase64() {
         
         assertEquals(expectedResult.trim(), result.trim());
     }
+
+    // TES 3: Untuk Jalur Error (Fix Coverage Merah)
+    @Test
+    @DisplayName("Paling Ter - Input Base64 tidak valid")
+    void palingTer_ShouldHandleInvalidBase64() {
+        HomeController controller = new HomeController();
+        
+        // Input: String yang sengaja dirusak (bukan Base64 valid)
+        String invalidBase64 = "MTIz*"; 
+        
+        // Ekspektasi: Program harus me-return pesan error IllegalArgumentException
+        String expectedResult = "Error: Format Base64 tidak valid.";
+        
+        String result = controller.palingTer(invalidBase64);
+        
+        assertEquals(expectedResult.trim(), result.trim());
+    }
+    
+
 }
