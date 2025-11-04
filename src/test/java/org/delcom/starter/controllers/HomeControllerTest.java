@@ -37,9 +37,6 @@ class HomeControllerTest {
         assertEquals("Hello, Abdullah!", result);
     }
 
-    // ===================================
-    // TEST LENGKAP UNTUK informasiNim
-    // ===================================
 
     @Test
     @DisplayName("Mengembalikan informasi nim Sarjana Informatika")
@@ -126,9 +123,6 @@ class HomeControllerTest {
     }
 
 
-    // ===================================
-    // TEST LENGKAP UNTUK perolehanNilai
-    // ===================================
 
 @Test
     @DisplayName("Perolehan nilai - Menghitung data untuk Grade A")
@@ -215,9 +209,7 @@ class HomeControllerTest {
         String result = controller.perolehanNilai(base64Input);
         assertTrue(result.contains("Nilai Akhir: 10.00"));
     }
-// ==========================================
-    // TEST BARU UNTUK perbedaanL (Logika Baru)
-    // ==========================================
+
 
     @Test
     @DisplayName("perbedaanL - Input valid sesuai screenshot")
@@ -261,10 +253,6 @@ class HomeControllerTest {
     }
 
 
-    // ==========================================
-    // TEST BARU UNTUK palingTer (Logika Baru)
-    // ==========================================
-
     @Test
     @DisplayName("Paling Ter - Input valid sesuai screenshot")
     void testPalingTer_ValidInput() {
@@ -276,14 +264,7 @@ class HomeControllerTest {
             5
             10
             """;
-        // Data ini:
-        // Angka: 10, 5, 9, 10, 5, 10
-        // Max: 10, Min: 5
-        // Frekuensi: 10 (3x), 5 (2x), 9 (1x)
-        // Terbanyak: 10 (3x)
-        // Tersedikit: 9 (1x)
-        // Jml Tertinggi: 10 * 3 = 30
-        // Jml Terendah: 5 * 2 = 10
+
         
         String base64Input = encode(input);
         String result = controller.palingTer(base64Input);
@@ -320,14 +301,7 @@ class HomeControllerTest {
             5
             -10
             """;
-        // Data ini:
-        // Angka: -10, 5, -10, -5, 5, -10
-        // Max: 5, Min: -10
-        // Frekuensi: -10 (3x), 5 (2x), -5 (1x)
-        // Terbanyak: -10 (3x)
-        // Tersedikit: -5 (1x)
-        // Jml Tertinggi: 5 * 2 = 10
-        // Jml Terendah: -10 * 3 = -30
+
         
         String base64Input = encode(input);
         String result = controller.palingTer(base64Input);
@@ -345,14 +319,7 @@ String expected = "Tertinggi: 5 Terendah: -10 Terbanyak: -10 (3x) Tersedikit: -5
             10
             5
             """;
-        // Data ini:
-        // Angka: 10, 5, 10, 5
-        // Max: 10, Min: 5
-        // Frekuensi: 10 (2x), 5 (2x)
-        // Terbanyak: 10 (2x) (ditemukan pertama)
-        // Tersedikit: 10 (2x) (saat mengecek 5, if(2 < 2) akan false)
-        // Jml Tertinggi: 10 * 2 = 20
-        // Jml Terendah: 5 * 2 = 10
+   
         
         String base64Input = encode(input);
         String result = controller.palingTer(base64Input);
