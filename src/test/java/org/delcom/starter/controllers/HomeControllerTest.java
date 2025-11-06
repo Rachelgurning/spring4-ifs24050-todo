@@ -1,47 +1,30 @@
 package org.delcom.starter.controllers;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Base64;
+@SpringBootTest
+class HomeControllerUnitTest {
+    // Test untuk metode hello()
+    // --------------------------------
+    @Test
+    @DisplayName("Mengembalikan pesan selamat datang yang benar")
+    void hello_ShouldReturnWelcomeMessage() throws Exception {
+        // Arrange
+        HomeController controller = new HomeController();
 
-class HomeControllerTest {
+        // Act
+        String result = controller.hello();
 
-    private HomeController controller;
-
-    // Fungsi bantu encode string ke Base64
-    private String encode(String text) {
-        return Base64.getEncoder().encodeToString(text.getBytes());
+        // Assert
+        assertEquals("Hay, selamat datang di aplikasi dengan Spring Boot!", result);
     }
 
-// HAPUS 'private HomeController controller;'
-
-// ...
-
-// @BeforeEach memastikan controller baru dibuat sebelum SETIAP tes
-@BeforeEach
-void setUp() {
-    // Biarkan ini
-    controller = new HomeController(); 
-}
-
-@Test
-@DisplayName("Mengembalikan pesan selamat datang yang benar")
-void hello_ShouldReturnWelcomeMessage() {
-    // Arrange
-    // HAPUS BARIS INI: HomeController controller = new HomeController();
-
-    // Act
-    String result = controller.hello(); // <-- Gunakan 'controller' dari @BeforeEach
-
-    // Assert
-    assertEquals("Hay Abdullah, selamat datang di pengembangan aplikasi dengan Spring Boot!", result);
-}
-
-// ... lakukan hal yang sama untuk SEMUA method test lainnya ...
-    // Tambahan test untuk metode sayHello dengan parameter nama
+    // Test untuk metode sayHello()
+    // --------------------------------
     @Test
     @DisplayName("Mengembalikan pesan sapaan yang dipersonalisasi")
     void helloWithName_ShouldReturnPersonalizedGreeting() throws Exception {
@@ -55,157 +38,178 @@ void hello_ShouldReturnWelcomeMessage() {
         assertEquals("Hello, Abdullah!", result);
     }
 
-    // Test untuk method informasiNim()
-    // ========================================
-    //       case "11S": jurusan = "Sarjana Informatika"; break;
+    // Test untuk metode informasiNim()
+    // --------------------------------
+    @Test
+    @DisplayName("Menguji semua kemungkinan NIM valid dan tidak valid")
+    void informasiNIM_semua_kemungkinan_nim_valid_dan_tidak_valid() throws Exception {
+        // Test NIM Tidak Valid
+        {
+            String input = "11S180";
+            String expected = "NIM harus 8 karakter";
 
-    // Test untuk informasiNIM Sarjana Informatika
-     @Test
-    @DisplayName("Mengembalikan informasi nim Sarjana Informatika")
-    void informasiNim_mengembalikanInformasiNimS1IF() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
+            // Arrange
+            HomeController controller = new HomeController();
 
-        // Act
-        String result = controller.informasiNim("11S24049");
+            // Act
+            String result = controller.informasiNim(input);
 
-        // Assert
-        assertEquals("Informasi NIM 11S24049: >> Program Studi: Sarjana Informatika >> Angkatan: 2024 >> Urutan: 49", result);
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test NIM Valid dengan Prodi Tidak Tersedia
+        {
+            String input = "ZZS18005";
+            String expected = "Program Studi tidak Tersedia";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test Sarjan Informatika
+        {
+            String input = "11S18005";
+            String expected = "Inforamsi NIM 11S18005: >> Program Studi: Sarjana Informatika>> Angkatan: 2018>> Urutan: 5";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test Sarjana Sistem Informasi
+        {
+            String input = "12S18005";
+            String expected = "Inforamsi NIM 12S18005: >> Program Studi: Sarjana Sistem Informasi>> Angkatan: 2018>> Urutan: 5";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test Sarjana Teknik Elektro
+        {
+            String input = "14S18005";
+            String expected = "Inforamsi NIM 14S18005: >> Program Studi: Sarjana Teknik Elektro>> Angkatan: 2018>> Urutan: 5";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test Sarjana Manajemen Rekayasa
+        {
+            String input = "21S18005";
+            String expected = "Inforamsi NIM 21S18005: >> Program Studi: Sarjana Manajemen Rekayasa>> Angkatan: 2018>> Urutan: 5";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test Sarjana Teknik Metalurgi
+        {
+            String input = "22S18005";
+            String expected = "Inforamsi NIM 22S18005: >> Program Studi: Sarjana Teknik Metalurgi>> Angkatan: 2018>> Urutan: 5";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test Sarjana Teknik Bioproses
+        {
+            String input = "31S18005";
+            String expected = "Inforamsi NIM 31S18005: >> Program Studi: Sarjana Teknik Bioproses>> Angkatan: 2018>> Urutan: 5";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test Diploma 4 Teknologi Rekasaya Perangkat Lunak
+        {
+            String input = "11418005";
+            String expected = "Inforamsi NIM 11418005: >> Program Studi: Diploma 4 Teknologi Rekasaya Perangkat Lunak>> Angkatan: 2018>> Urutan: 5";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test Diploma 3 Teknologi Informasi
+        {
+            String input = "11318005";
+            String expected = "Inforamsi NIM 11318005: >> Program Studi: Diploma 3 Teknologi Informasi>> Angkatan: 2018>> Urutan: 5";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
+
+        // Test Diploma 3 Teknologi Komputer
+        {
+            String input = "13318005";
+            String expected = "Inforamsi NIM 13318005: >> Program Studi: Diploma 3 Teknologi Komputer>> Angkatan: 2018>> Urutan: 5";
+
+            // Arrange
+            HomeController controller = new HomeController();
+
+            // Act
+            String result = controller.informasiNim(input);
+
+            // Assert
+            assertEquals(expected, result);
+        }
     }
 
-     @Test
-    @DisplayName("Mengembalikan informasi nim Sarjana Sistem Informasi")
-    void informasiNim_mengembalikanInformasiNimS1SI() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("12S24049");
-
-        // Assert
-        assertEquals("Informasi NIM 12S24049: >> Program Studi: Sarjana Sistem Informasi >> Angkatan: 2024 >> Urutan: 49", result);
-    }
-    
-    @Test
-    @DisplayName("Mengembalikan informasi nim Sarjana Teknik Elektro")
-    void informasiNim_mengembalikanInformasiNimS1TE() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("14S24049");
-
-        // Assert
-        assertEquals("Informasi NIM 14S24049: >> Program Studi: Sarjana Teknik Elektro >> Angkatan: 2024 >> Urutan: 49", result);
-    }
-
-     @Test
-    @DisplayName("Mengembalikan informasi nim Manajemen Rekayasa")
-    void informasiNim_mengembalikanInformasiNimS1MR() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("21S24049");
-
-        // Assert
-        assertEquals("Informasi NIM 21S24049: >> Program Studi: Sarjana Manajemen Rekayasa >> Angkatan: 2024 >> Urutan: 49", result);
-    }
-
-    @Test
-    @DisplayName("Mengembalikan informasi nim Teknik Metalurgi")
-    void informasiNim_mengembalikanInformasiNimS1TM() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("22S24049");
-
-        // Assert
-        assertEquals("Informasi NIM 22S24049: >> Program Studi: Sarjana Teknik Metalurgi >> Angkatan: 2024 >> Urutan: 49", result);
-    }
-
-    @Test
-    @DisplayName("Mengembalikan informasi nim Sarjana Teknik Bioproses")
-    void informasiNim_mengembalikanInformasiNimS1TB() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("31S24049");
-
-        // Assert
-        assertEquals("Informasi NIM 31S24049: >> Program Studi: Sarjana Teknik Bioproses >> Angkatan: 2024 >> Urutan: 49", result);
-    }
-
-    @Test
-    @DisplayName("Mengembalikan informasi nim Diploma 4 Teknologi Rekayasa Perangkat Lunak")
-    void informasiNim_mengembalikanInformasiNimD4TRPL() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("11424049");
-
-        // Assert
-        assertEquals("Informasi NIM 11424049: >> Program Studi: Diploma 4 Teknologi Rekayasa Perangkat Lunak >> Angkatan: 2024 >> Urutan: 49", result);
-    } 
-
-    @Test
-    @DisplayName("Mengembalikan informasi nim Diploma 3 Teknologi Informasi")
-    void informasiNim_mengembalikanInformasiNimD3TI() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("11324049");
-
-        // Assert
-        assertEquals("Informasi NIM 11324049: >> Program Studi: Diploma 3 Teknologi Informasi >> Angkatan: 2024 >> Urutan: 49", result);
-    } 
-
-    @Test
-    @DisplayName("Mengembalikan informasi nim Diploma 3 Teknologi Komputer")
-    void informasiNim_mengembalikanInformasiNimD3TK() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("13324049");
-
-        // Assert
-        assertEquals("Informasi NIM 13324049: >> Program Studi: Diploma 3 Teknologi Komputer >> Angkatan: 2024 >> Urutan: 49", result);
-    } 
-
-    @Test
-    @DisplayName("Mengembalikan informasi nim NIM tidak sesuai format")
-    void informasiNim_mengembalikanInformasiNimXX() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("1xx24049");
-
-        // Assert
-        assertEquals("Prefix 1xx tidak dikenali", result);
-    } 
-
-    @Test
-    @DisplayName("Mengembalikan informasi nim NIM tidak sesuai format")
-    void informasiNim_mengembalikanInformasiNim4() throws Exception {
-        // Arrange
-        HomeController controller = new HomeController();
-
-        // Act
-        String result = controller.informasiNim("12S24");
-
-        // Assert
-        assertEquals("NIM tidak sesuai format!", result);
- 
-    }
-   
-
- // Test untuk metode perolehanNilai()
+    // Test untuk metode perolehanNilai()
     // --------------------------------
     @Test
     @DisplayName("Perolehan nilai dengan berbagai kombinasi komponen penilaian")

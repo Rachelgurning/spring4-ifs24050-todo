@@ -1,34 +1,23 @@
 package org.delcom.starter.controllers;
 
-<<<<<<< HEAD
+import java.util.HashMap;
+import java.util.Locale;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Locale;
-
 import java.util.ArrayList;
 import java.util.Base64;
-=======
-<<<<<<< HEAD
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-=======
-import org.springframework.web.bind.annotation.*;
-import java.util.Base64;
 
->>>>>>> 3e747eb060fda53dc62fef882978a1e4a6dd8e28
->>>>>>> 5b26d003612a4515cf5ea43ec7a5713206e7b845
 
 @RestController
 public class HomeController {
 
     @GetMapping("/")
     public String hello() {
-        return "Hay Abdullah, selamat datang di pengembangan aplikasi dengan Spring Boot!";
+        return "Hay, selamat datang di aplikasi dengan Spring Boot!";
     }
 
     @GetMapping("/hello/{name}")
@@ -36,53 +25,38 @@ public class HomeController {
         return "Hello, " + name + "!";
     }
 
-<<<<<<< HEAD
-=======
-     // 1. Informasi NIM (migrasi StudiKasus1)
-    @GetMapping("/informasiNim/{nim}")
-    public String informasiNim(@PathVariable String nim) {
-        nim = nim.trim();
-        StringBuilder sb = new StringBuilder();
+    @GetMapping("/informasi-nim") 
+        public String informasiNim(@RequestParam String nim) {
+            HashMap<String, String> prodi = new HashMap<>();
+            prodi.put("11S", "Sarjana Informatika");
+            prodi.put("12S", "Sarjana Sistem Informasi");
+            prodi.put("14S", "Sarjana Teknik Elektro");
+            prodi.put("21S", "Sarjana Manajemen Rekayasa");
+            prodi.put("22S", "Sarjana Teknik Metalurgi");
+            prodi.put("31S", "Sarjana Teknik Bioproses");
+            prodi.put("114", "Diploma 4 Teknologi Rekasaya Perangkat Lunak");
+            prodi.put("113", "Diploma 3 Teknologi Informasi");
+            prodi.put("133", "Diploma 3 Teknologi Komputer");
 
-        if (nim.length() < 8) {
-            sb.append("NIM tidak sesuai format!");
-            return sb.toString();
+            if(nim.length() != 8) {
+                return "NIM harus 8 karakter";
+            }
+
+            String degreePrefix = nim.substring(0,3);
+            if(!prodi.containsKey(degreePrefix)) {
+                return "Program Studi tidak Tersedia";
+            }
+            String angkatan = nim.substring(3, 5);
+            String urutan = nim.substring(5, 8);
+            String prodiPrefix = prodi.getOrDefault(degreePrefix, urutan);
+           
+            
+            int urutanInt = Integer.parseInt(urutan); // Konversi ke integer untuk hapus leading zeros
+            return String.format("Inforamsi NIM %s: >> Program Studi: %s>> Angkatan: 20%s>> Urutan: %d", nim, prodiPrefix, angkatan, urutanInt);
+            
         }
-
-        String awal = nim.substring(0, 3);
-        String thn = nim.substring(3, 5);
-        String urut = nim.substring(5);
-
-        String jurusan;
-        jurusan = switch (awal) {
-            case "11S" -> "Sarjana Informatika";
-            case "12S" -> "Sarjana Sistem Informasi";
-            case "14S" -> "Sarjana Teknik Elektro";
-            case "21S" -> "Sarjana Manajemen Rekayasa";
-            case "22S" -> "Sarjana Teknik Metalurgi";
-            case "31S" -> "Sarjana Teknik Bioproses";
-            case "114" -> "Diploma 4 Teknologi Rekayasa Perangkat Lunak";
-            case "113" -> "Diploma 3 Teknologi Informasi";
-            case "133" -> "Diploma 3 Teknologi Komputer";
-            default -> null;
-        };
-
-        if (jurusan == null) {
-            sb.append("Prefix ").append(awal).append(" tidak dikenali");
-        } else {
-            int tahunMasuk = Integer.parseInt("20" + thn);
-            int no = Integer.parseInt(urut);
-
-            sb.append("Informasi NIM ").append(nim).append(":").append(" ");
-            sb.append(">> Program Studi: ").append(jurusan).append(" ");
-            sb.append(">> Angkatan: ").append(tahunMasuk).append(" ");
-            sb.append(">> Urutan: ").append(no);
-        }
-
-        return sb.toString();
-    }
-
- @GetMapping("/perolehan-nilai")
+    
+    @GetMapping("/perolehan-nilai")
         public String perolehanNilai(@RequestParam String strBase64) {
             String decodedInput = decode(strBase64).trim();
             Locale.setDefault(Locale.US);
@@ -377,111 +351,4 @@ public class HomeController {
     public static String decode(String base64) {
         return new String(Base64.getDecoder().decode(base64));
     }
-<<<<<<< HEAD
-=======
->>>>>>> 3e747eb060fda53dc62fef882978a1e4a6dd8e28
-}
-
-// Method 4: Paling Ter (Perbaikan Error Handling) - PERBAIKAN
-@GetMapping("/palingTer/{strBase64}")
-public String palingTer(@PathVariable String strBase64) {
-    try {
-        // 1. DECODE Base64
-        byte[] decodedBytes = Base64.getDecoder().decode(strBase64);
-        String inputAsli = new String(decodedBytes);
-
-        // 2. LOGIKA PROGRAM
-        String[] baris = inputAsli.split("\\R");
-        
-        // Buat array untuk menyimpan angka-angka
-        int[] angka = new int[baris.length];
-        int count = 0; // Jumlah angka yang valid
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-
-        // Loop pertama: Parse angka, hitung min & max
-        for (String b : baris) {
-            try {
-                int n = Integer.parseInt(b.trim());
-                angka[count] = n; // Simpan angka valid
-                count++;
-                
-                if (n > max) max = n;
-                if (n < min) min = n;
-                
-            } catch (NumberFormatException e) {
-                // Abaikan baris yang bukan angka
-            }
-        }
-
-        // 3. RETURN jika tidak ada angka
-        if (count == 0) {
-            return "Tidak ada angka yang valid ditemukan.";
-        }
-        
-        // 4. LOGIKA FREKUENSI (Tanpa Map)
-        int terbanyakVal = 0;
-        int terbanyakCount = 0;
-        int tersedikitVal = 0;
-        int tersedikitCount = Integer.MAX_VALUE;
-        int terendahCount = 0; // Hitung frekuensi angka 'min'
-
-        for (int i = 0; i < count; i++) {
-            int currentNum = angka[i];
-            int currentCount = 0;
-            
-            // Cek apakah angka ini sudah pernah dihitung sebelumnya
-            boolean seen = false;
-            for (int j = 0; j < i; j++) {
-                if (angka[j] == currentNum) {
-                    seen = true;
-                    break;
-                }
-            }
-            if (seen) continue; // Lewati jika sudah dihitung
-
-            // Hitung frekuensi 'currentNum'
-            for (int j = 0; j < count; j++) {
-                if (angka[j] == currentNum) {
-                    currentCount++;
-                }
-            }
-            
-            // Update Terbanyak
-            if (currentCount > terbanyakCount) {
-                terbanyakCount = currentCount;
-                terbanyakVal = currentNum;
-            }
-            
-            // Update Tersedikit
-            if (currentCount < tersedikitCount) {
-                tersedikitCount = currentCount;
-                tersedikitVal = currentNum;
-            }
-        }
-        
-        // Hitung frekuensi angka Terendah (min)
-        for (int i = 0; i < count; i++) {
-            if (angka[i] == min) {
-                terendahCount++;
-            }
-        }
-
-        // 5. Hitung Jumlah
-        long jumlahTertinggi = (long)max * terbanyakCount;
-        long jumlahTerendah = (long)min * terendahCount;
-
-        // 6. Kembalikan hasil sesuai format screenshot
-        return "Tertinggi: " + max + " Terendah: " + min + 
-               " Terbanyak: " + terbanyakVal + " (" + terbanyakCount + "x) Tersedikit: " + 
-               tersedikitVal + " (" + tersedikitCount + "x) Jumlah Tertinggi: " + 
-               max + " * " + terbanyakCount + " = " + jumlahTertinggi + 
-               " Jumlah Terendah: " + min + " * " + terendahCount + " = " + jumlahTerendah;
-        
-    } catch (IllegalArgumentException e) {
-         // 4. CATCH INI SEKARANG AKAN BERFUNGSI
-        return "Error: Format Base64 tidak valid.";
-    }
-}
->>>>>>> 5b26d003612a4515cf5ea43ec7a5713206e7b845
 }
