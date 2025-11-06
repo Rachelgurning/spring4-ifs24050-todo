@@ -1,3 +1,4 @@
+
 # Spring v4.0 Starter Proyek
 
 ## Logs
@@ -5,7 +6,10 @@
 ### 29-10-2025
 
 - Melakukan inisialisasi proyek
-
+- Menambahkan method `sayHello()` pada HomeController
+= Menambahkan pengujian untuk method `sayHello()`
+- Menambahkan method `sayHooo()` pada HomeController
+= Menambahkan pengujian untuk method `sayHooo()`
 
 ## Syntax
 
@@ -14,7 +18,7 @@
 command: `mvn clean install`
 
 ### Menjalankan Aplikasi
-
+mvn spring-boot:run
 Command: `mvn spring-boot:run`
 
 URL: http://localhost:8080
