@@ -1,5 +1,6 @@
 package org.delcom.starter.controllers;
 
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,6 +11,17 @@ import java.util.Locale;
 
 import java.util.ArrayList;
 import java.util.Base64;
+=======
+<<<<<<< HEAD
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+=======
+import org.springframework.web.bind.annotation.*;
+import java.util.Base64;
+
+>>>>>>> 3e747eb060fda53dc62fef882978a1e4a6dd8e28
+>>>>>>> 5b26d003612a4515cf5ea43ec7a5713206e7b845
 
 @RestController
 public class HomeController {
@@ -24,6 +36,8 @@ public class HomeController {
         return "Hello, " + name + "!";
     }
 
+<<<<<<< HEAD
+=======
      // 1. Informasi NIM (migrasi StudiKasus1)
     @GetMapping("/informasiNim/{nim}")
     public String informasiNim(@PathVariable String nim) {
@@ -363,4 +377,111 @@ public class HomeController {
     public static String decode(String base64) {
         return new String(Base64.getDecoder().decode(base64));
     }
+<<<<<<< HEAD
+=======
+>>>>>>> 3e747eb060fda53dc62fef882978a1e4a6dd8e28
+}
+
+// Method 4: Paling Ter (Perbaikan Error Handling) - PERBAIKAN
+@GetMapping("/palingTer/{strBase64}")
+public String palingTer(@PathVariable String strBase64) {
+    try {
+        // 1. DECODE Base64
+        byte[] decodedBytes = Base64.getDecoder().decode(strBase64);
+        String inputAsli = new String(decodedBytes);
+
+        // 2. LOGIKA PROGRAM
+        String[] baris = inputAsli.split("\\R");
+        
+        // Buat array untuk menyimpan angka-angka
+        int[] angka = new int[baris.length];
+        int count = 0; // Jumlah angka yang valid
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
+        // Loop pertama: Parse angka, hitung min & max
+        for (String b : baris) {
+            try {
+                int n = Integer.parseInt(b.trim());
+                angka[count] = n; // Simpan angka valid
+                count++;
+                
+                if (n > max) max = n;
+                if (n < min) min = n;
+                
+            } catch (NumberFormatException e) {
+                // Abaikan baris yang bukan angka
+            }
+        }
+
+        // 3. RETURN jika tidak ada angka
+        if (count == 0) {
+            return "Tidak ada angka yang valid ditemukan.";
+        }
+        
+        // 4. LOGIKA FREKUENSI (Tanpa Map)
+        int terbanyakVal = 0;
+        int terbanyakCount = 0;
+        int tersedikitVal = 0;
+        int tersedikitCount = Integer.MAX_VALUE;
+        int terendahCount = 0; // Hitung frekuensi angka 'min'
+
+        for (int i = 0; i < count; i++) {
+            int currentNum = angka[i];
+            int currentCount = 0;
+            
+            // Cek apakah angka ini sudah pernah dihitung sebelumnya
+            boolean seen = false;
+            for (int j = 0; j < i; j++) {
+                if (angka[j] == currentNum) {
+                    seen = true;
+                    break;
+                }
+            }
+            if (seen) continue; // Lewati jika sudah dihitung
+
+            // Hitung frekuensi 'currentNum'
+            for (int j = 0; j < count; j++) {
+                if (angka[j] == currentNum) {
+                    currentCount++;
+                }
+            }
+            
+            // Update Terbanyak
+            if (currentCount > terbanyakCount) {
+                terbanyakCount = currentCount;
+                terbanyakVal = currentNum;
+            }
+            
+            // Update Tersedikit
+            if (currentCount < tersedikitCount) {
+                tersedikitCount = currentCount;
+                tersedikitVal = currentNum;
+            }
+        }
+        
+        // Hitung frekuensi angka Terendah (min)
+        for (int i = 0; i < count; i++) {
+            if (angka[i] == min) {
+                terendahCount++;
+            }
+        }
+
+        // 5. Hitung Jumlah
+        long jumlahTertinggi = (long)max * terbanyakCount;
+        long jumlahTerendah = (long)min * terendahCount;
+
+        // 6. Kembalikan hasil sesuai format screenshot
+        return "Tertinggi: " + max + " Terendah: " + min + 
+               " Terbanyak: " + terbanyakVal + " (" + terbanyakCount + "x) Tersedikit: " + 
+               tersedikitVal + " (" + tersedikitCount + "x) Jumlah Tertinggi: " + 
+               max + " * " + terbanyakCount + " = " + jumlahTertinggi + 
+               " Jumlah Terendah: " + min + " * " + terendahCount + " = " + jumlahTerendah;
+        
+    } catch (IllegalArgumentException e) {
+         // 4. CATCH INI SEKARANG AKAN BERFUNGSI
+        return "Error: Format Base64 tidak valid.";
+    }
+}
+>>>>>>> 5b26d003612a4515cf5ea43ec7a5713206e7b845
 }
